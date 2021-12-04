@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PostSystemAPI.DAL.Context;
+using PostSystemAPI.DAL.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,12 @@ namespace PostSystemAPI
         {
             services.AddDbContext<PostSystemContext>(opt => opt.UseSqlServer
                 (Configuration.GetConnectionString("PostSystemConnection")));
+
+            services.AddScoped<ICityRepo, CityRepo>();
+            services.AddScoped<IPostOfficeRepo, PostOfficeRepo>();
+            services.AddScoped<IDeliveryRepo, DeliveryRepo>();
+            services.AddScoped<ISenderRepo, SenderRepo>();
+            services.AddScoped<IReceiverRepo,ReceiverRepo>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
