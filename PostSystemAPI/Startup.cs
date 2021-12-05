@@ -37,6 +37,8 @@ namespace PostSystemAPI
             services.AddScoped<ISenderRepo, SenderRepo>();
             services.AddScoped<IReceiverRepo,ReceiverRepo>();
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
