@@ -21,17 +21,17 @@ namespace PostSystemAPI.WebApi.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<CityReadDTO> GetCityById(int id)
+        public ActionResult<CityDTO> GetCityById(int id)
         {
             var query = _repository.GetByIdAsync(id);
-            return Ok(_mapper.Map<CityReadDTO>(query));
+            return Ok(_mapper.Map<CityDTO>(query));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CityReadDTO>> GetAllCities()
+        public ActionResult<IEnumerable<CityDTO>> GetAllCities()
         {
             var query = _repository.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<CityReadDTO>>(query));
+            return Ok(_mapper.Map<IEnumerable<CityDTO>>(query));
         }
     }
 }

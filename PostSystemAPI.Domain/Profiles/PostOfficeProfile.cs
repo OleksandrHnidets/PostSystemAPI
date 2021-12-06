@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Profiles
 {
-    public class CitiesProfile: Profile
+    public  class PostOfficeProfile: Profile
     {
-        public CitiesProfile()
+        public PostOfficeProfile()
         {
-            CreateMap<City, CityView>().ReverseMap();
-            CreateMap<City, CityDTO>().ReverseMap();
-            CreateMap<CityView, CityDTO>().ReverseMap();
+            CreateMap<PostOffice, PostOfficeView>().ReverseMap();
+            CreateMap<PostOffice, PostOfficeDTO>().ReverseMap();
+            CreateMap<PostOfficeView, PostOfficeDTO>().ReverseMap();
         }
     }
 }

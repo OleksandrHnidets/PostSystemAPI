@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PostSystemAPI.DAL.Context;
 using PostSystemAPI.DAL.Repository;
+using PostSystemAPI.Domain.Services.Implementations;
+using PostSystemAPI.Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +38,12 @@ namespace PostSystemAPI
             services.AddScoped<IDeliveryRepo, DeliveryRepo>();
             services.AddScoped<ISenderRepo, SenderRepo>();
             services.AddScoped<IReceiverRepo,ReceiverRepo>();
+
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IPostOfficeService, PostOfficeService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<ISenderService, SenderService>();
+            services.AddScoped<IReceiverService, ReceiverService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

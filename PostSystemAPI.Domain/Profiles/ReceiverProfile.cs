@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Profiles
 {
-    public class CitiesProfile: Profile
+    public class ReceiverProfile: Profile
     {
-        public CitiesProfile()
+        public ReceiverProfile()
         {
-            CreateMap<City, CityView>().ReverseMap();
-            CreateMap<City, CityDTO>().ReverseMap();
-            CreateMap<CityView, CityDTO>().ReverseMap();
+            CreateMap<Receiver, ReceiverView>().ReverseMap();
+            CreateMap<Receiver, ReceiverDTO>().ReverseMap();
+            CreateMap<ReceiverView, ReceiverDTO>().ReverseMap();
         }
     }
 }
