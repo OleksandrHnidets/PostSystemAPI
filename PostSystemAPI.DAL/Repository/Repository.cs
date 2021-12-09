@@ -48,6 +48,7 @@ namespace PostSystemAPI.DAL.Repository
         private IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> predicate = null
             , Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
         {
+            //var query = _context.Set<TEntity>().AsQueryable();
             var query = _context.Set<TEntity>().AsQueryable();
             if(include != null)
             {
