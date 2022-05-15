@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PostSystemAPI.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Context
 {
-    public class PostSystemContext: DbContext
+    public class PostSystemContext: IdentityDbContext
     {
         public PostSystemContext(DbContextOptions<PostSystemContext> options)
             : base(options)
