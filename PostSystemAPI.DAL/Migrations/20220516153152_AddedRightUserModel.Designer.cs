@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PostSystemAPI.DAL.Context;
 
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    partial class PostSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20220516153152_AddedRightUserModel")]
+    partial class AddedRightUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,22 +46,6 @@ namespace PostSystemAPI.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "5432ce17-d8ed-47b3-8b24-5819aadb02f5",
-                            ConcurrencyStamp = "eee18ead-cbbd-43c8-b9bc-17ffacfbd963",
-                            Name = "Viewer",
-                            NormalizedName = "VIEWER"
-                        },
-                        new
-                        {
-                            Id = "17911b6e-cca7-4d63-8789-eb0adec9be03",
-                            ConcurrencyStamp = "137e3d75-67ab-4423-9584-b084dec90da5",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

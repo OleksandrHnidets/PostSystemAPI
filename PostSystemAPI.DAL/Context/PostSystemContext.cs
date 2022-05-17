@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Context
 {
-    public class PostSystemContext: IdentityDbContext
+    public class PostSystemContext: IdentityDbContext<User>
     {
         public PostSystemContext(DbContextOptions<PostSystemContext> options)
             : base(options)
@@ -25,5 +25,12 @@ namespace PostSystemAPI.DAL.Context
         public DbSet<Receiver> Receivers { get; set; }
 
         public DbSet<Sender> Senders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.ApplyConfiguration(new RoleConfiguration());
+        }
     }
 }

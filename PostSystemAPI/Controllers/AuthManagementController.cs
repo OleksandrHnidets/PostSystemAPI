@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using PostSystemAPI.DAL.Models;
 using PostSystemAPI.Domain.Configuration;
 using PostSystemAPI.Domain.DTO.Request;
 using PostSystemAPI.Domain.DTO.Response;
@@ -19,10 +20,10 @@ namespace PostSystemAPI.WebApi.Controllers
     [ApiController]
     public class AuthManagementController: ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly JwtConfig _jwtConfig;
 
-        public AuthManagementController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
+        public AuthManagementController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
@@ -46,10 +47,11 @@ namespace PostSystemAPI.WebApi.Controllers
                     });
                 }
 
-                var newUser = new IdentityUser() { Email=user.Email, UserName=user.Name};
+                var newUser = new User() { Email=user.Email, UserName=$"{user.FirstName}_{user.LastName}"};
                 var IsCreated = await _userManager.CreateAsync(newUser, user.Password);
                 if(IsCreated.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(newUser, "Viewer");
                     var jwtToken = GenerateJwtToken(newUser);
                     return Ok(new RegistrationResponse()
                     {
@@ -130,7 +132,7 @@ namespace PostSystemAPI.WebApi.Controllers
             });
         }
 
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 

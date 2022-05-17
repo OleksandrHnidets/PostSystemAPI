@@ -63,7 +63,10 @@ namespace PostSystemAPI
                 };
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<User, IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireDigit = false;
+            })
                 .AddEntityFrameworkStores<PostSystemContext>();
 
             services.AddScoped<ICityRepo, CityRepo>();
@@ -90,7 +93,7 @@ namespace PostSystemAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options => options
-               .WithOrigins("http://localhost:3000")
+               .WithOrigins("http://localhost:4200")
                .AllowAnyMethod()
                .AllowAnyHeader());
 
