@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -56,7 +58,7 @@ namespace PostSystemAPI.WebApi.Controllers
                     return Ok(new RegistrationResponse()
                     {
                         Result = true,
-                        Token = jwtToken
+                        Token = await jwtToken
                     });
                 }
 
@@ -105,7 +107,7 @@ namespace PostSystemAPI.WebApi.Controllers
                     return Ok(new RegistrationResponse()
                     {
                         Result = true,
-                        Token = jwtToken
+                        Token = await jwtToken
                     });
                 }
                 else
@@ -132,8 +134,22 @@ namespace PostSystemAPI.WebApi.Controllers
             });
         }
 
-        private string GenerateJwtToken(User user)
+        [HttpGet("privacy")]
+        [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Administrator")]
+        public async Task<IActionResult> Privacy()
         {
+            var claims = User.Claims
+                .Select(x => new { x.Type, x.Value })
+                .ToList();
+
+            return Ok(claims);
+        }
+
+        private async Task<string> GenerateJwtToken(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var role =roles.FirstOrDefault();
+
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
@@ -144,7 +160,8 @@ namespace PostSystemAPI.WebApi.Controllers
                     new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("role", role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(6),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
