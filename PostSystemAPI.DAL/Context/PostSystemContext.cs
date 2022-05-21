@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PostSystemAPI.DAL.MappingConfigurations;
 using PostSystemAPI.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,9 @@ namespace PostSystemAPI.DAL.Context
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new RoleConfiguration());
+
+            UserConfiguration.Configure(builder);
+            PostOfficeConfiguration.Configure(builder);
         }
     }
 }

@@ -11,5 +11,15 @@ namespace PostSystemAPI.DAL.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int Balance { get; set; }
+
+        public virtual ICollection<Delivery> SendedDeliveries { get; set; }
+        public virtual ICollection<Delivery> ReceivedDeliveries { get; set; }
+
+        public User ()
+        {
+            SendedDeliveries = new HashSet<Delivery> ();
+            ReceivedDeliveries = new HashSet<Delivery> ();
+        }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PostSystemAPI.DAL.Context;
 
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    partial class PostSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20220520172213_UpdatedUserModel")]
+    partial class UpdatedUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace PostSystemAPI.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f0e09da6-a097-4461-bfba-0c265cf01279",
-                            ConcurrencyStamp = "7ae84c3f-5ca0-4608-8343-733772ab8af4",
+                            Id = "d90b135e-ff4e-489d-82d4-b2f603e8f1e4",
+                            ConcurrencyStamp = "5c9341e6-3128-46da-8f2a-257479c22cf3",
                             Name = "Viewer",
                             NormalizedName = "VIEWER"
                         },
                         new
                         {
-                            Id = "9a9741cd-a47e-4d3b-8f8d-1c490481dc90",
-                            ConcurrencyStamp = "68c74cd2-c1d7-4cdf-896e-1cde2d7865fe",
+                            Id = "7e600452-463f-4722-8633-1a3d81ed3fb1",
+                            ConcurrencyStamp = "a4695400-c8c7-4f75-81e2-2a2b938dd9d3",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -197,22 +199,15 @@ namespace PostSystemAPI.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeliveryName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("PostOfficeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReceivedBy")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("ReceiverId")
                         .HasColumnType("int");
-
-                    b.Property<string>("SendedBy")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("SenderId")
                         .HasColumnType("int");
@@ -221,11 +216,7 @@ namespace PostSystemAPI.DAL.Migrations
 
                     b.HasIndex("PostOfficeId");
 
-                    b.HasIndex("ReceivedBy");
-
                     b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SendedBy");
 
                     b.HasIndex("SenderId");
 
@@ -435,19 +426,9 @@ namespace PostSystemAPI.DAL.Migrations
                         .WithMany("Deliveries")
                         .HasForeignKey("PostOfficeId");
 
-                    b.HasOne("PostSystemAPI.DAL.Models.User", "ReceivedUser")
-                        .WithMany("ReceivedDeliveries")
-                        .HasForeignKey("ReceivedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("PostSystemAPI.DAL.Models.Receiver", "Receiver")
                         .WithMany("Deliveries")
                         .HasForeignKey("ReceiverId");
-
-                    b.HasOne("PostSystemAPI.DAL.Models.User", "SendedUser")
-                        .WithMany("SendedDeliveries")
-                        .HasForeignKey("SendedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("PostSystemAPI.DAL.Models.Sender", "Sender")
                         .WithMany("Deliveries")
@@ -455,11 +436,7 @@ namespace PostSystemAPI.DAL.Migrations
 
                     b.Navigation("PostOffice");
 
-                    b.Navigation("ReceivedUser");
-
                     b.Navigation("Receiver");
-
-                    b.Navigation("SendedUser");
 
                     b.Navigation("Sender");
                 });
@@ -491,13 +468,6 @@ namespace PostSystemAPI.DAL.Migrations
             modelBuilder.Entity("PostSystemAPI.DAL.Models.Sender", b =>
                 {
                     b.Navigation("Deliveries");
-                });
-
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.User", b =>
-                {
-                    b.Navigation("ReceivedDeliveries");
-
-                    b.Navigation("SendedDeliveries");
                 });
 #pragma warning restore 612, 618
         }

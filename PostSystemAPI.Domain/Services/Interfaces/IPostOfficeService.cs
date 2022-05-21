@@ -10,8 +10,8 @@ namespace PostSystemAPI.Domain.Services.Interfaces
     public interface IPostOfficeService
     {
         Task<IEnumerable<PostOffice>> GetAllPostOffices();
-        Task<PostOffice> GetPostOfficeById(int id);
+        Task<PostOffice> GetPostOfficeById(string id);
         Task CreatePostOfficeAsync(PostOffice postOffice);
-        Task DeletePostOfficeAsync(int id);
+        Task DeletePostOfficeAsync(string id);
     }
 }

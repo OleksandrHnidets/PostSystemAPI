@@ -75,9 +75,9 @@ namespace PostSystemAPI
             services.AddScoped<ISenderRepo, SenderRepo>();
             services.AddScoped<IReceiverRepo,ReceiverRepo>();
 
-            services.AddScoped<ICityService, CityService>();
-            services.AddScoped<IPostOfficeService, PostOfficeService>();
-            services.AddScoped<IDeliveryService, DeliveryService>();
+           // services.AddScoped<ICityService, CityService>();
+            //services.AddScoped<IPostOfficeService, PostOfficeService>();
+           // services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<ISenderService, SenderService>();
             services.AddScoped<IReceiverService, ReceiverService>();
 

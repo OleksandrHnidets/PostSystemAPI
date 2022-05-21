@@ -25,7 +25,7 @@ namespace PostSystemAPI.WebApi.Controllers
 
 
         [HttpGet("{id}",Name="GetCityById")]
-        public async Task<ActionResult<CityView>> GetCityById(int id)
+        public async Task<ActionResult<CityView>> GetCityById(string id)
         {
             var city = await _cityService.GetCityById(id);
             var cityView = _mapper.Map<CityView>(city);
@@ -50,7 +50,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CityView>> UpdateCity(int id, CityDTO updatedCity)
+        public async Task<ActionResult<CityView>> UpdateCity(string id, CityDTO updatedCity)
         {
             var city = _mapper.Map<City>(updatedCity);
             await _cityService.UpdateCityAsync(id, city);
@@ -59,7 +59,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteCity(int id)
+        public async Task<ActionResult> DeleteCity(string id)
         {
             await _cityService.DeleteCityAsync(id);
             return Ok();

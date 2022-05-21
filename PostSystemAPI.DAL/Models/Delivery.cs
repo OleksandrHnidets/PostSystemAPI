@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostSystemAPI.DAL.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,16 +10,24 @@ namespace PostSystemAPI.DAL.Models
 {
     public class Delivery
     {
-        public int Id { get; set; }
-        [Required]
-        [MaxLength(100)]
+        public Guid Id { get; set; }
         public string DeliveryName { get; set; }
-        public string DeliveryDescription { get; set; } = "No description";
-        [Required]
+        public string DeliveryDescription { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public int Price { get; set; }
+        public DeliveryStatus DeliveryStatus { get; set; }
+        public DeliveryType DeliveryType { get; set; }
+
         public Sender Sender { get; set; }
         public Receiver Receiver { get; set; }
-        public PostOffice PostOffice { get; set; }
+
+        public string SendedBy { get; set; }
+        public string ReceivedBy { get; set; }
+        public Guid PostOfficeId { get; set; }
+
+        public virtual User SendedUser { get; set; }
+        public virtual User ReceivedUser { get; set; }
+        public virtual PostOffice PostOffice { get; set; }
 
     }
 }

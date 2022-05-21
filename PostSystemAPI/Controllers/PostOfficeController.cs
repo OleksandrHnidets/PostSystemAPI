@@ -23,7 +23,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpGet("{id}", Name = "GetPostOfficeById")]
-        public async Task<ActionResult<PostOfficeView>> GetPostOfficeById(int id)
+        public async Task<ActionResult<PostOfficeView>> GetPostOfficeById(string id)
         {
             var postOffice = await _postOfficeService.GetPostOfficeById(id);
             var postOfficeView = _mapper.Map<PostOfficeView>(postOffice);
@@ -48,7 +48,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePostOffice(int id)
+        public async Task<ActionResult> DeletePostOffice(string id)
         {
             await _postOfficeService.DeletePostOfficeAsync(id);
             return Ok();

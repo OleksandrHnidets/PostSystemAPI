@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Services.Implementations
 {
-    public class DeliveryService : IDeliveryService
+    public class DeliveryService// : IDeliveryService
     {
-        private readonly IDeliveryRepo _repo;
+       /* private readonly IDeliveryRepo _repo;
         public DeliveryService(IDeliveryRepo repo)
         {
             _repo = repo;
@@ -23,7 +23,7 @@ namespace PostSystemAPI.Domain.Services.Implementations
             await _repo.SaveChangesAsync();
         }
 
-        public async Task DeleteDeliveryAsync(int id)
+        public async Task DeleteDeliveryAsync(string id)
         {
             var delivery = await GetDeliveryByIdAsync(id);
             _repo.Delete(delivery);
@@ -39,17 +39,18 @@ namespace PostSystemAPI.Domain.Services.Implementations
             .Include(r => r.Receiver));
         }
 
-        public async Task<Delivery> GetDeliveryByIdAsync(int id)
+        public async Task<Delivery> GetDeliveryByIdAsync(string id)
         {
-            var delivery = await _repo.GetFirstAsync(predicate: d => d.Id == id);
+            var delivery = await _repo.GetFirstAsync(predicate: d => d.Id == Guid.Parse(id));
             return delivery;
         }
 
-        public async Task UpdateDeliveryAsync(int id, Delivery delivery)
+        public async Task UpdateDeliveryAsync(string id, Delivery delivery)
         {
-            delivery.Id = id;
+            delivery.Id = Guid.Parse(id);
             _repo.Update(delivery);
             await _repo.SaveChangesAsync();
         }
+       */
     }
 }

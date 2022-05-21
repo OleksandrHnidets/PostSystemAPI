@@ -23,7 +23,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpGet("{id}", Name ="GetDeliveryById")]
-        public async Task<ActionResult<DeliveryView>> GetDeliveryById(int id)
+        public async Task<ActionResult<DeliveryView>> GetDeliveryById(string id)
         {
             var delivery = await _deliveryService.GetDeliveryByIdAsync(id);
             var deliveryView = _mapper.Map<DeliveryView>(delivery);
@@ -48,7 +48,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<DeliveryView>> UpdateDelivery(int id, DeliveryDTO updatedDelivery)
+        public async Task<ActionResult<DeliveryView>> UpdateDelivery(string id, DeliveryDTO updatedDelivery)
         {
             var delivery = _mapper.Map<Delivery>(updatedDelivery);
             await _deliveryService.UpdateDeliveryAsync(id, delivery);
@@ -57,7 +57,7 @@ namespace PostSystemAPI.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteDelivery(int id)
+        public async Task<ActionResult> DeleteDelivery(string id)
         {
             await _deliveryService.DeleteDeliveryAsync(id);
             return Ok();

@@ -10,9 +10,9 @@ namespace PostSystemAPI.Domain.Services.Interfaces
     public interface ICityService
     {
         Task<IEnumerable<City>> GetAllCitiesAsync();
-        Task<City> GetCityById(int id);
+        Task<City> GetCityById(string id);
         Task CreateCityAsync(City city);
-        Task UpdateCityAsync(int id, City city);
-        Task DeleteCityAsync(int id);
+        Task UpdateCityAsync(string id, City city);
+        Task DeleteCityAsync(string id);
     }
 }

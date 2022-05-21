@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Services.Implementations
 {
-    public class CityService : ICityService
+    public class CityService// : ICityService
     {
         private readonly ICityRepo _repo;
         public CityService(ICityRepo repo)
@@ -24,12 +24,13 @@ namespace PostSystemAPI.Domain.Services.Implementations
             await _repo.SaveChangesAsync();
         }
 
-        public async Task DeleteCityAsync(int id)
+       /* public async Task DeleteCityAsync(string id)
         {
             var city = await GetCityById(id);
             _repo.Delete(city);
             await _repo.SaveChangesAsync();
         }
+       */
 
         public async Task<IEnumerable<City>> GetAllCitiesAsync()
         {
@@ -37,17 +38,18 @@ namespace PostSystemAPI.Domain.Services.Implementations
                 .Include(x => x.PostOffices));
         }
 
-        public async Task<City> GetCityById(int id)
+        /*public async Task<City> GetCityById(string id)
         {
-            var city = await _repo.GetFirstAsync(predicate: c => c.Id == id);
+            var city = await _repo.GetFirstAsync(predicate: c => c.Id == Guid.Parse(id));
             return city;
-        }   
+        } */  
 
-        public async Task UpdateCityAsync(int id, City city)
+       /* public async Task UpdateCityAsync(string id, City city)
         {
-            city.Id = id;
+            city.Id = Guid.Parse(id);
             _repo.Update(city);
             await _repo.SaveChangesAsync();
         }
+       */
     }
 }

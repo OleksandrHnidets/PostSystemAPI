@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Services.Implementations
 {
-    public class PostOfficeService : IPostOfficeService
+    public class PostOfficeService// : IPostOfficeService
     {
-        private readonly IPostOfficeRepo _repo;
+        /*private readonly IPostOfficeRepo _repo;
 
         public PostOfficeService(IPostOfficeRepo repo)
         {
@@ -24,7 +24,7 @@ namespace PostSystemAPI.Domain.Services.Implementations
             await _repo.SaveChangesAsync();
         }
 
-        public async Task DeletePostOfficeAsync(int id)
+        public async Task DeletePostOfficeAsync(string id)
         {
             var postOffice = await GetPostOfficeById(id);
             _repo.Delete(postOffice);
@@ -37,10 +37,11 @@ namespace PostSystemAPI.Domain.Services.Implementations
             .Include(c=>c.City));
         }
 
-        public async Task<PostOffice> GetPostOfficeById(int id)
+        public async Task<PostOffice> GetPostOfficeById(string id)
         {
-           var postOffice = await _repo.GetFirstAsync(x => id == x.Id);
+           var postOffice = await _repo.GetFirstAsync(x => Guid.Parse(id) == x.Id);
             return postOffice; 
         }
+        */
     }
 }

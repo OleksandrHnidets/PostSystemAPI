@@ -9,10 +9,13 @@ namespace PostSystemAPI.DAL.Models
 {
     public class City
     {
-        public int Id { get; set; }
-        [Required] 
-        [MaxLength(50)]
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<PostOffice> PostOffices { get; set; }
+        public virtual ICollection<PostOffice> PostOffices { get; set; }
+
+        public City()
+        {
+            PostOffices = new HashSet<PostOffice>();
+        }
     }
 }

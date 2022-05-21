@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PostSystemAPI.DAL.Models;
+using PostSystemAPI.Domain;
 using PostSystemAPI.Domain.Configuration;
 using PostSystemAPI.Domain.DTO.Request;
 using PostSystemAPI.Domain.DTO.Response;
@@ -24,11 +26,13 @@ namespace PostSystemAPI.WebApi.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly JwtConfig _jwtConfig;
+        private readonly IMapper _mapper;
 
-        public AuthManagementController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
+        public AuthManagementController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IMapper mapper)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -49,7 +53,7 @@ namespace PostSystemAPI.WebApi.Controllers
                     });
                 }
 
-                var newUser = new User() { Email=user.Email, UserName=$"{user.FirstName}_{user.LastName}"};
+                var newUser = new User() { Email=user.Email, UserName=$"{user.FirstName}_{user.LastName}", FirstName = user.FirstName, LastName = user.LastName};
                 var IsCreated = await _userManager.CreateAsync(newUser, user.Password);
                 if(IsCreated.Succeeded)
                 {
@@ -143,6 +147,21 @@ namespace PostSystemAPI.WebApi.Controllers
                 .ToList();
 
             return Ok(claims);
+        }
+
+        [HttpGet("get-user-info")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<UserInfoViewModel>> GetUserInfo()
+        {
+            var currentUserId = User.Claims.FirstOrDefault().Value;
+            var user = await _userManager.FindByIdAsync(currentUserId);
+            if (user == null)
+                return BadRequest("Failed to get current user data");
+
+            var userInfo = _mapper.Map<UserInfoViewModel>(user);
+            userInfo.Role = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
+
+            return Ok(userInfo);
         }
 
         private async Task<string> GenerateJwtToken(User user)

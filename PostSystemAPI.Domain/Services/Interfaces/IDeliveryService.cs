@@ -10,9 +10,9 @@ namespace PostSystemAPI.Domain.Services.Interfaces
     public interface IDeliveryService
     {
         Task<IEnumerable<Delivery>> GetAllDeliveries();
-        Task<Delivery> GetDeliveryByIdAsync(int id);
+        Task<Delivery> GetDeliveryByIdAsync(string id);
         Task CreateDeliveryAsync(Delivery delivery);
-        Task DeleteDeliveryAsync(int id);
-        Task UpdateDeliveryAsync(int id, Delivery delivery);
+        Task DeleteDeliveryAsync(string id);
+        Task UpdateDeliveryAsync(string id, Delivery delivery);
     }
 }
