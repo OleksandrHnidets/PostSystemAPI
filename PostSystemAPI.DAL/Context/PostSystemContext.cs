@@ -22,10 +22,11 @@ namespace PostSystemAPI.DAL.Context
         public DbSet<Delivery> Deliveries { get; set; }
 
         public DbSet<PostOffice> PostOffices { get; set; }
+        public DbSet<TransactionHistory> TransactionsHistory { get; set; }
 
-        public DbSet<Receiver> Receivers { get; set; }
+        //public DbSet<Receiver> Receivers { get; set; }
 
-        public DbSet<Sender> Senders { get; set; }
+        //public DbSet<Sender> Senders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

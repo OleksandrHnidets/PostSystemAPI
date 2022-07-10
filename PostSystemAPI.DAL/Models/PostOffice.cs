@@ -11,6 +11,8 @@ namespace PostSystemAPI.DAL.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Adress { get; set; }
+        public int PostOfficeBalance { get; set; }
         public Guid CityId { get; set; }
         public virtual City City { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }

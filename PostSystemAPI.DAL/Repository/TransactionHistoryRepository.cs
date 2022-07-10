@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Repository
 {
-    public class SenderRepo: Repository<Sender>, ISenderRepo
+    public class TransactionHistoryRepository: Repository<TransactionHistory>, ITransactionHistoryRepository
     {
-        public SenderRepo(PostSystemContext context)
+        public TransactionHistoryRepository(PostSystemContext context)
             : base(context) { }
     }
 }

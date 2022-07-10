@@ -13,13 +13,15 @@ namespace PostSystemAPI.DAL.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
-        private readonly PostSystemContext _context;
-       // private readonly DbSet<TEntity> dbEntities;
+        protected PostSystemContext _context;
+        protected DbSet<TEntity> DbSet { get; }
+        public IQueryable<TEntity> Entities { get; }
 
         public Repository(PostSystemContext context)
         {
             this._context = context;
-          //  dbEntities = this.context.Set<TEntity>();
+            DbSet = this._context.Set<TEntity>();
+            Entities = DbSet;
         }
 
         public async Task AddAsync(TEntity entity)

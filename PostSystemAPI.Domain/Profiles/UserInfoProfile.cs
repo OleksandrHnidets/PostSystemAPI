@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PostSystemAPI.DAL.Models;
+using PostSystemAPI.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace PostSystemAPI.Domain.Profiles
         public UserInfoProfile()
         {
             CreateMap<User, UserInfoViewModel>().ReverseMap();
+            CreateMap<User, ReceiverViewModel>().ReverseMap();
         }
     }
 }

@@ -72,14 +72,15 @@ namespace PostSystemAPI
             services.AddScoped<ICityRepo, CityRepo>();
             services.AddScoped<IPostOfficeRepo, PostOfficeRepo>();
             services.AddScoped<IDeliveryRepo, DeliveryRepo>();
-            services.AddScoped<ISenderRepo, SenderRepo>();
-            services.AddScoped<IReceiverRepo,ReceiverRepo>();
+            services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
+            //services.AddScoped<ISenderRepo, SenderRepo>();
+            //services.AddScoped<IReceiverRepo,ReceiverRepo>();
 
            // services.AddScoped<ICityService, CityService>();
-            //services.AddScoped<IPostOfficeService, PostOfficeService>();
-           // services.AddScoped<IDeliveryService, DeliveryService>();
-            services.AddScoped<ISenderService, SenderService>();
-            services.AddScoped<IReceiverService, ReceiverService>();
+            services.AddScoped<IPostOfficeService, PostOfficeService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
+            //services.AddScoped<ISenderService, SenderService>();
+            //services.AddScoped<IReceiverService, ReceiverService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

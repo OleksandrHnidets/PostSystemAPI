@@ -10,8 +10,8 @@ using PostSystemAPI.DAL.Context;
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    [Migration("20220515154409_AddedAuthentication")]
-    partial class AddedAuthentication
+    [Migration("20220525140231_AddedTransactionHistoryTable")]
+    partial class AddedTransactionHistoryTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,22 @@ namespace PostSystemAPI.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "6d770f4b-8832-4e5f-8314-19c1c206533e",
+                            ConcurrencyStamp = "ffae3178-6d47-4ec9-a988-bbfe7df373ed",
+                            Name = "Viewer",
+                            NormalizedName = "VIEWER"
+                        },
+                        new
+                        {
+                            Id = "98e741eb-6145-499e-bf91-e0c89d6f3d59",
+                            ConcurrencyStamp = "3ce51904-afc7-41cf-b318-ce6d3607fdb3",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -70,71 +86,6 @@ namespace PostSystemAPI.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -219,15 +170,13 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.City", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -236,10 +185,10 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.Delivery", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
@@ -248,44 +197,56 @@ namespace PostSystemAPI.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeliveryName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostOfficeId")
+                    b.Property<byte>("DeliveryStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DeliveryType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<Guid>("PostOfficeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceiverId")
-                        .HasColumnType("int");
+                    b.Property<string>("ReceivedBy")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("SenderId")
-                        .HasColumnType("int");
+                    b.Property<string>("SendedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("TransactionHistoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostOfficeId");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("ReceivedBy");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("SendedBy");
+
+                    b.HasIndex("TransactionHistoryId")
+                        .IsUnique()
+                        .HasFilter("[TransactionHistoryId] IS NOT NULL");
 
                     b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.PostOffice", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -294,54 +255,95 @@ namespace PostSystemAPI.DAL.Migrations
                     b.ToTable("PostOffices");
                 });
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Receiver", b =>
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.TransactionHistory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Receivers");
+                    b.ToTable("TransactionsHistory");
                 });
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Sender", b =>
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Age")
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Senders");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -355,7 +357,7 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("PostSystemAPI.DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,7 +366,7 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("PostSystemAPI.DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -379,7 +381,7 @@ namespace PostSystemAPI.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("PostSystemAPI.DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -388,7 +390,7 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("PostSystemAPI.DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -399,28 +401,40 @@ namespace PostSystemAPI.DAL.Migrations
                 {
                     b.HasOne("PostSystemAPI.DAL.Models.PostOffice", "PostOffice")
                         .WithMany("Deliveries")
-                        .HasForeignKey("PostOfficeId");
+                        .HasForeignKey("PostOfficeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("PostSystemAPI.DAL.Models.Receiver", "Receiver")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("ReceiverId");
+                    b.HasOne("PostSystemAPI.DAL.Models.User", "ReceivedUser")
+                        .WithMany("ReceivedDeliveries")
+                        .HasForeignKey("ReceivedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("PostSystemAPI.DAL.Models.Sender", "Sender")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("SenderId");
+                    b.HasOne("PostSystemAPI.DAL.Models.User", "SendedUser")
+                        .WithMany("SendedDeliveries")
+                        .HasForeignKey("SendedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("PostSystemAPI.DAL.Models.TransactionHistory", "TransactionHistory")
+                        .WithOne("Delivery")
+                        .HasForeignKey("PostSystemAPI.DAL.Models.Delivery", "TransactionHistoryId");
 
                     b.Navigation("PostOffice");
 
-                    b.Navigation("Receiver");
+                    b.Navigation("ReceivedUser");
 
-                    b.Navigation("Sender");
+                    b.Navigation("SendedUser");
+
+                    b.Navigation("TransactionHistory");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.PostOffice", b =>
                 {
                     b.HasOne("PostSystemAPI.DAL.Models.City", "City")
                         .WithMany("PostOffices")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("City");
                 });
@@ -435,14 +449,16 @@ namespace PostSystemAPI.DAL.Migrations
                     b.Navigation("Deliveries");
                 });
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Receiver", b =>
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.TransactionHistory", b =>
                 {
-                    b.Navigation("Deliveries");
+                    b.Navigation("Delivery");
                 });
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Sender", b =>
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.User", b =>
                 {
-                    b.Navigation("Deliveries");
+                    b.Navigation("ReceivedDeliveries");
+
+                    b.Navigation("SendedDeliveries");
                 });
 #pragma warning restore 612, 618
         }

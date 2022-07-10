@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.ViewModels
 {
-    public class PostOfficeView
+    public class TransactionHistoryViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string CityId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string DeliveryId { get; set; }
+        public DeliveryView Delivery { get; set; }
+
+
     }
 }

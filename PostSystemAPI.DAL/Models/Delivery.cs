@@ -17,10 +17,6 @@ namespace PostSystemAPI.DAL.Models
         public int Price { get; set; }
         public DeliveryStatus DeliveryStatus { get; set; }
         public DeliveryType DeliveryType { get; set; }
-
-        public Sender Sender { get; set; }
-        public Receiver Receiver { get; set; }
-
         public string SendedBy { get; set; }
         public string ReceivedBy { get; set; }
         public Guid PostOfficeId { get; set; }
@@ -28,6 +24,7 @@ namespace PostSystemAPI.DAL.Models
         public virtual User SendedUser { get; set; }
         public virtual User ReceivedUser { get; set; }
         public virtual PostOffice PostOffice { get; set; }
+        public TransactionHistory TransactionHistory { get; set; }
 
     }
 }

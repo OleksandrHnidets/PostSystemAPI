@@ -10,8 +10,8 @@ using PostSystemAPI.DAL.Context;
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    [Migration("20220521140704_UpdatedUserAndDeliveryModels")]
-    partial class UpdatedUserAndDeliveryModels
+    [Migration("20220527145703_UpdatedPostOfficeModel")]
+    partial class UpdatedPostOfficeModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace PostSystemAPI.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f0e09da6-a097-4461-bfba-0c265cf01279",
-                            ConcurrencyStamp = "7ae84c3f-5ca0-4608-8343-733772ab8af4",
+                            Id = "edb9b861-5295-4a77-8702-2105d528d2a3",
+                            ConcurrencyStamp = "152de72d-4232-4f64-9a6a-adf5ffbdccbb",
                             Name = "Viewer",
                             NormalizedName = "VIEWER"
                         },
                         new
                         {
-                            Id = "9a9741cd-a47e-4d3b-8f8d-1c490481dc90",
-                            ConcurrencyStamp = "68c74cd2-c1d7-4cdf-896e-1cde2d7865fe",
+                            Id = "0a05bea5-ca0f-4e50-9cd3-8457a152586b",
+                            ConcurrencyStamp = "023a25df-50a5-4053-83aa-309dbc4f148f",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -170,15 +170,13 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.City", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -187,10 +185,10 @@ namespace PostSystemAPI.DAL.Migrations
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.Delivery", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
@@ -201,8 +199,14 @@ namespace PostSystemAPI.DAL.Migrations
                     b.Property<string>("DeliveryName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostOfficeId")
-                        .HasColumnType("int");
+                    b.Property<byte>("DeliveryStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DeliveryType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<Guid>("PostOfficeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -210,14 +214,8 @@ namespace PostSystemAPI.DAL.Migrations
                     b.Property<string>("ReceivedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("ReceiverId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SendedBy")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("SenderId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -225,29 +223,29 @@ namespace PostSystemAPI.DAL.Migrations
 
                     b.HasIndex("ReceivedBy");
 
-                    b.HasIndex("ReceiverId");
-
                     b.HasIndex("SendedBy");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.PostOffice", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
+                    b.Property<string>("Adress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostOfficeBalance")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -256,54 +254,28 @@ namespace PostSystemAPI.DAL.Migrations
                     b.ToTable("PostOffices");
                 });
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Receiver", b =>
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.TransactionHistory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<Guid?>("DeliveryId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Receivers");
-                });
+                    b.HasIndex("DeliveryId")
+                        .IsUnique()
+                        .HasFilter("[DeliveryId] IS NOT NULL");
 
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Sender", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Senders");
+                    b.ToTable("TransactionsHistory");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.User", b =>
@@ -435,44 +407,45 @@ namespace PostSystemAPI.DAL.Migrations
                 {
                     b.HasOne("PostSystemAPI.DAL.Models.PostOffice", "PostOffice")
                         .WithMany("Deliveries")
-                        .HasForeignKey("PostOfficeId");
+                        .HasForeignKey("PostOfficeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("PostSystemAPI.DAL.Models.User", "ReceivedUser")
                         .WithMany("ReceivedDeliveries")
                         .HasForeignKey("ReceivedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("PostSystemAPI.DAL.Models.Receiver", "Receiver")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("ReceiverId");
-
                     b.HasOne("PostSystemAPI.DAL.Models.User", "SendedUser")
                         .WithMany("SendedDeliveries")
                         .HasForeignKey("SendedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("PostSystemAPI.DAL.Models.Sender", "Sender")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("SenderId");
-
                     b.Navigation("PostOffice");
 
                     b.Navigation("ReceivedUser");
 
-                    b.Navigation("Receiver");
-
                     b.Navigation("SendedUser");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.PostOffice", b =>
                 {
                     b.HasOne("PostSystemAPI.DAL.Models.City", "City")
                         .WithMany("PostOffices")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("City");
+                });
+
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.TransactionHistory", b =>
+                {
+                    b.HasOne("PostSystemAPI.DAL.Models.Delivery", "Delivery")
+                        .WithOne("TransactionHistory")
+                        .HasForeignKey("PostSystemAPI.DAL.Models.TransactionHistory", "DeliveryId");
+
+                    b.Navigation("Delivery");
                 });
 
             modelBuilder.Entity("PostSystemAPI.DAL.Models.City", b =>
@@ -480,17 +453,12 @@ namespace PostSystemAPI.DAL.Migrations
                     b.Navigation("PostOffices");
                 });
 
+            modelBuilder.Entity("PostSystemAPI.DAL.Models.Delivery", b =>
+                {
+                    b.Navigation("TransactionHistory");
+                });
+
             modelBuilder.Entity("PostSystemAPI.DAL.Models.PostOffice", b =>
-                {
-                    b.Navigation("Deliveries");
-                });
-
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Receiver", b =>
-                {
-                    b.Navigation("Deliveries");
-                });
-
-            modelBuilder.Entity("PostSystemAPI.DAL.Models.Sender", b =>
                 {
                     b.Navigation("Deliveries");
                 });

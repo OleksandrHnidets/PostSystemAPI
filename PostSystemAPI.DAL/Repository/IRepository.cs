@@ -11,6 +11,8 @@ namespace PostSystemAPI.DAL.Repository
     public interface IRepository<TEntity>
         where TEntity : class
     {
+        IQueryable<TEntity> Entities { get; }
+
         Task AddAsync(TEntity entity);
 
         Task AddRangeAsync(IEnumerable<TEntity> entities);

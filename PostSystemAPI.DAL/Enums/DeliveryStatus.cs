@@ -16,6 +16,9 @@ namespace PostSystemAPI.DAL.Enums
         WaitingToAccept,
 
         [Description("Received")]
-        Received
+        Received,
+
+        [Description("Declined")]
+        Declined
     }
 }

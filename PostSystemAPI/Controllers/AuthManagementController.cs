@@ -10,6 +10,7 @@ using PostSystemAPI.Domain;
 using PostSystemAPI.Domain.Configuration;
 using PostSystemAPI.Domain.DTO.Request;
 using PostSystemAPI.Domain.DTO.Response;
+using PostSystemAPI.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -53,7 +54,7 @@ namespace PostSystemAPI.WebApi.Controllers
                     });
                 }
 
-                var newUser = new User() { Email=user.Email, UserName=$"{user.FirstName}_{user.LastName}", FirstName = user.FirstName, LastName = user.LastName};
+                var newUser = new User() { Email=user.Email, UserName=$"{user.FirstName}_{user.LastName}", FirstName = user.FirstName, LastName = user.LastName, Balance = 20000};
                 var IsCreated = await _userManager.CreateAsync(newUser, user.Password);
                 if(IsCreated.Succeeded)
                 {
@@ -162,6 +163,21 @@ namespace PostSystemAPI.WebApi.Controllers
             userInfo.Role = User.Claims.FirstOrDefault(u => u.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
 
             return Ok(userInfo);
+        }
+
+        [HttpGet("get-receiver-info")]
+        public async Task<ActionResult<ReceiverViewModel>> GetReceiverInfo(string firstName, string lastName, string email)
+        {
+            var user = _userManager.Users.FirstOrDefault(u => u.FirstName == firstName && u.LastName == lastName && u.Email == email);
+
+            if (user == null)
+                return BadRequest("Failed to get receiver");
+
+            var userView = _mapper.Map<ReceiverViewModel>(user);
+            if(userView != null)
+                return Ok(userView);
+            return BadRequest("Cannot find receiver");
+
         }
 
         private async Task<string> GenerateJwtToken(User user)

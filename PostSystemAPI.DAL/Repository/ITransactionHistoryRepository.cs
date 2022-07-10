@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Repository
 {
-    public interface IReceiverRepo: IRepository<Receiver>
+    public interface ITransactionHistoryRepository: IRepository<TransactionHistory>
     {
     }
 }

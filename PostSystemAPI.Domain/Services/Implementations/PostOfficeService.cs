@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.Services.Implementations
 {
-    public class PostOfficeService// : IPostOfficeService
+    public class PostOfficeService : IPostOfficeService
     {
-        /*private readonly IPostOfficeRepo _repo;
+        private readonly IPostOfficeRepo _repo;
 
         public PostOfficeService(IPostOfficeRepo repo)
         {
@@ -42,6 +42,6 @@ namespace PostSystemAPI.Domain.Services.Implementations
            var postOffice = await _repo.GetFirstAsync(x => Guid.Parse(id) == x.Id);
             return postOffice; 
         }
-        */
+        
     }
 }

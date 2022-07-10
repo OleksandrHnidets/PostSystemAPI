@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.Domain.ViewModels
 {
-    public class PostOfficeView
+    public class CityReadView
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string CityId { get; set; }
     }
 }

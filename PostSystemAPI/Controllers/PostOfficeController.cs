@@ -1,25 +1,35 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PostSystemAPI.DAL.Context;
 using PostSystemAPI.DAL.Models;
+using PostSystemAPI.DAL.Repository;
 using PostSystemAPI.Domain.DTO.ReadDTO;
 using PostSystemAPI.Domain.Services.Interfaces;
 using PostSystemAPI.Domain.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace PostSystemAPI.WebApi.Controllers
 {
-    [Route("api/postoffice")]
+    [Route("api/post-office")]
     [ApiController]
     public class PostOfficeController: ControllerBase
     {
         private readonly IPostOfficeService _postOfficeService;
         private readonly IMapper _mapper;
+        private readonly IPostOfficeRepo _repo;
+        private readonly ICityRepo _cityRepo;
+        private readonly PostSystemContext _context;
 
-        public PostOfficeController(IPostOfficeService cityService, IMapper mapper)
+        public PostOfficeController(IPostOfficeService cityService, IMapper mapper, IPostOfficeRepo repo, PostSystemContext context, ICityRepo cityRepo)
         {
             _postOfficeService = cityService;
             _mapper = mapper;
+            _repo = repo;
+            _context = context;
+            _cityRepo = cityRepo;
         }
 
         [HttpGet("{id}", Name = "GetPostOfficeById")]
@@ -30,11 +40,15 @@ namespace PostSystemAPI.WebApi.Controllers
             return Ok(postOfficeView);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<PostOfficeView>>> GetAllPostOffices()
         {
-            var postOffices = await _postOfficeService.GetAllPostOffices();
-            var postOfficeView = _mapper.Map<IEnumerable<PostOfficeView>>(postOffices);
+            var postOffices = _repo.Entities.ToList();
+            List<PostOfficeView> postOfficeView = new List<PostOfficeView>();
+            foreach (var postOffice in postOffices)
+            {
+                postOfficeView.Add(_mapper.Map<PostOfficeView>(postOffice));
+            }
             return Ok(postOfficeView);
         }
 
@@ -52,6 +66,19 @@ namespace PostSystemAPI.WebApi.Controllers
         {
             await _postOfficeService.DeletePostOfficeAsync(id);
             return Ok();
+        }
+
+        [HttpGet("all-admin")]
+        public async Task<ActionResult<PostOfficeReadView>> GetAllAdminPostOffices()
+        {
+            var postOffices = _repo.Entities.Include(p=>p.City).Include(P=>P.Deliveries).ToList();
+            List<PostOfficeReadView> postOfficesView = new List<PostOfficeReadView>();
+            foreach (var postOffice in postOffices)
+            {
+                postOfficesView.Add(_mapper.Map<PostOfficeReadView>(postOffice));
+                postOfficesView.Last().CountOfdeliveries = postOffice.Deliveries.Count;
+            }
+            return Ok(postOfficesView);
         }
 
 
