@@ -23,6 +23,7 @@ namespace PostSystemAPI.DAL.Context
 
         public DbSet<PostOffice> PostOffices { get; set; }
         public DbSet<TransactionHistory> TransactionsHistory { get; set; }
+        public DbSet<Position> Positions { get; set; }
 
         //public DbSet<Receiver> Receivers { get; set; }
 
@@ -36,6 +37,7 @@ namespace PostSystemAPI.DAL.Context
 
             UserConfiguration.Configure(builder);
             PostOfficeConfiguration.Configure(builder);
+            PositionConfiguration.Configure(builder);
         }
     }
 }

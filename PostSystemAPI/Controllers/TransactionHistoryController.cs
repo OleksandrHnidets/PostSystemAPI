@@ -41,7 +41,7 @@ namespace PostSystemAPI.WebApi.Controllers
                     return NotFound("User was not found");
 
 
-                var transactionHistory = _transactionRepo.Entities.Where(t => t.Delivery.ReceivedBy == userId).Include(r => r.Delivery).ToList();
+                var transactionHistory = _transactionRepo.Entities.Where(t => t.Delivery.ReceivedUserId == userId).Include(r => r.Delivery).ToList();
                 var transactionHistoryView = new List<TransactionHistoryViewModel>();
                 foreach(var transaction in transactionHistory)
                 {

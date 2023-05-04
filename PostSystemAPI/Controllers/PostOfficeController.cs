@@ -71,12 +71,12 @@ namespace PostSystemAPI.WebApi.Controllers
         [HttpGet("all-admin")]
         public async Task<ActionResult<PostOfficeReadView>> GetAllAdminPostOffices()
         {
-            var postOffices = _repo.Entities.Include(p=>p.City).Include(P=>P.Deliveries).ToList();
+            var postOffices = _repo.Entities.Include(p=>p.City).Include(P=>P.SentDeliveries).ToList();
             List<PostOfficeReadView> postOfficesView = new List<PostOfficeReadView>();
             foreach (var postOffice in postOffices)
             {
                 postOfficesView.Add(_mapper.Map<PostOfficeReadView>(postOffice));
-                postOfficesView.Last().CountOfdeliveries = postOffice.Deliveries.Count;
+                postOfficesView.Last().CountOfdeliveries = postOffice.SentDeliveries.Count;
             }
             return Ok(postOfficesView);
         }

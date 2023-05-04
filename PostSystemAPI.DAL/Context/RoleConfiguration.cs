@@ -23,6 +23,11 @@ namespace PostSystemAPI.DAL.Context
                 {
                     Name = "Administrator",
                     NormalizedName = "ADMINISTRATOR"
+                },
+                new IdentityRole
+                {
+                    Name = "Driver",
+                    NormalizedName = "DRIVER"
                 }
            );
         }

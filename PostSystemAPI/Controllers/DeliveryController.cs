@@ -60,7 +60,7 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedBy == id || d.ReceivedBy == id)
+                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
                 .Include(i => i.SendedUser)
                 .ToList();
             foreach(var delivery in deliveries)
@@ -85,7 +85,7 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedBy == id || d.ReceivedBy == id)
+                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
                 .Where(d => d.DeliveryStatus == DeliveryStatus.Received)
                 .Include(i => i.SendedUser)
                 .ToList();
@@ -106,7 +106,7 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedBy == id || d.ReceivedBy == id)
+                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
                 .Where(d => d.DeliveryStatus == DeliveryStatus.Declined)
                 .Include(i => i.SendedUser)
                 .ToList();
@@ -144,7 +144,7 @@ namespace PostSystemAPI.WebApi.Controllers
             if (user == null)
                 return BadRequest("User is not found");
 
-            if (delivery.ReceivedBy == userId)
+            if (delivery.ReceivedUserId == userId)
             {
                 return Ok(true);
             }
@@ -153,7 +153,7 @@ namespace PostSystemAPI.WebApi.Controllers
 
         }
 
-        [HttpPost("accept-delivery")]
+        /*[HttpPost("accept-delivery")]
         public async Task<ActionResult<string>> AcceptDelivery(string deliveryId, string userId)
         {
             try
@@ -200,6 +200,7 @@ namespace PostSystemAPI.WebApi.Controllers
 
             return Ok("Delivery succesfully accepted");
         }
+        */
 
         [HttpPost("decline-delivery")]
         public async Task<ActionResult<string>> DeclineDelivery(string deliveryId, string userId)

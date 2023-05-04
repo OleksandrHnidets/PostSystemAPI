@@ -14,6 +14,7 @@ namespace PostSystemAPI.Domain.Profiles
     {
         public DeliverProfile()
         {
+            /*
             CreateMap<DeliveryView, Delivery>()
                 .ForMember(dest => dest.ReceivedBy, opt => opt.MapFrom(src => Guid.Parse(src.ReceiverId)))
                 .ForMember(dest => dest.SendedBy, opt => opt.MapFrom(src => Guid.Parse(src.SenderId)))
@@ -21,8 +22,10 @@ namespace PostSystemAPI.Domain.Profiles
             CreateMap<Delivery, ReadDeliveryView>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(opt => opt.Id.ToString()))
                 .ForMember(dest => dest.PostOfficeId, opt => opt.MapFrom(opt => opt.PostOfficeId.ToString()));
+                */
             CreateMap<Delivery, DeliveryDTO>().ReverseMap();
             CreateMap<DeliveryView, DeliveryDTO>().ReverseMap();
+            CreateMap<Delivery, DriverDeliveriesViewModel>();
         }
     }
 }

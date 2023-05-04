@@ -17,13 +17,18 @@ namespace PostSystemAPI.DAL.Models
         public int Price { get; set; }
         public DeliveryStatus DeliveryStatus { get; set; }
         public DeliveryType DeliveryType { get; set; }
-        public string SendedBy { get; set; }
-        public string ReceivedBy { get; set; }
-        public Guid PostOfficeId { get; set; }
+        public bool IsFinished { get; set; }
+        public string SendedUserId { get; set; }
+        public string ReceivedUserId { get; set; }
+        public string AssignedDriverId { get; set; }
+        public Guid StartPostOfficeId { get; set; }
+        public Guid DestinationPostOfficeId { get; set; }
 
         public virtual User SendedUser { get; set; }
         public virtual User ReceivedUser { get; set; }
-        public virtual PostOffice PostOffice { get; set; }
+        public virtual User AssignedDriver { get; set; }
+        public virtual PostOffice StartPostOffice { get; set; }
+        public virtual PostOffice DestinationPostOffice { get; set; }
         public TransactionHistory TransactionHistory { get; set; }
 
     }

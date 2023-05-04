@@ -15,15 +15,27 @@ namespace PostSystemAPI.DAL.MappingConfigurations
             builder.Entity<User>()
                     .HasMany(r => r.SendedDeliveries)
                     .WithOne(u => u.SendedUser)
-                    .HasForeignKey(e => e.SendedBy)
+                    .HasForeignKey(e => e.SendedUserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<User>()
                     .HasMany(r => r.ReceivedDeliveries)
                     .WithOne(u => u.ReceivedUser)
-                    .HasForeignKey(e => e.ReceivedBy)
+                    .HasForeignKey(e => e.ReceivedUserId)
                     .OnDelete(DeleteBehavior.NoAction);
-            
+
+            builder.Entity<User>()
+                .HasMany(r => r.AssignedDeliveries)
+                .WithOne(u => u.AssignedDriver)
+                .HasForeignKey(e => e.AssignedDriverId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<User>()
+                .HasMany(r => r.Positions)
+                .WithOne(u => u.User)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Delivery>().Property(e=>e.Id).IsRequired().HasDefaultValueSql("NEWID()");
         }
     }

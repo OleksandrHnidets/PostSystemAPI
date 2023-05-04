@@ -14,12 +14,16 @@ namespace PostSystemAPI.DAL.Models
         public string Adress { get; set; }
         public int PostOfficeBalance { get; set; }
         public Guid CityId { get; set; }
+        public Guid SentDeliveriesId { get; set; }
+        public Guid ReceivedDeliveriesId { get; set; }
         public virtual City City { get; set; }
-        public virtual ICollection<Delivery> Deliveries { get; set; }
+        public virtual ICollection<Delivery> SentDeliveries { get; set; }
+        public virtual ICollection<Delivery> ReceivedDeliveries { get; set; }
 
         public PostOffice()
         {
-            Deliveries = new HashSet<Delivery>();
+            SentDeliveries = new HashSet<Delivery>();
+            ReceivedDeliveries = new HashSet<Delivery>();
         }
 
     }

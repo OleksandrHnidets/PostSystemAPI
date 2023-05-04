@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PostSystemAPI.DAL.Models;
@@ -28,12 +29,14 @@ namespace PostSystemAPI.WebApi.Controllers
         private readonly UserManager<User> _userManager;
         private readonly JwtConfig _jwtConfig;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthManagementController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IMapper mapper)
+        public AuthManagementController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, IMapper mapper, IConfiguration configuration)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -88,7 +91,8 @@ namespace PostSystemAPI.WebApi.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
         {
-            if(ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
                 var existingUser = await _userManager.FindByEmailAsync(user.Email);
 
@@ -141,7 +145,7 @@ namespace PostSystemAPI.WebApi.Controllers
 
         [HttpGet("privacy")]
         [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Administrator")]
-        public async Task<IActionResult> Privacy()
+        public async Task<IActionResult> eqPrivacy()
         {
             var claims = User.Claims
                 .Select(x => new { x.Type, x.Value })
@@ -150,11 +154,12 @@ namespace PostSystemAPI.WebApi.Controllers
             return Ok(claims);
         }
 
+       
         [HttpGet("get-user-info")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Policy = "WorkerPolicy", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserInfoViewModel>> GetUserInfo()
         {
-            var currentUserId = User.Claims.FirstOrDefault().Value;
+            var currentUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
             var user = await _userManager.FindByIdAsync(currentUserId);
             if (user == null)
                 return BadRequest("Failed to get current user data");
@@ -205,7 +210,22 @@ namespace PostSystemAPI.WebApi.Controllers
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = jwtTokenHandler.WriteToken(token);
 
-            return jwtToken;
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, role)
+            };
+            var jwt = new JwtSecurityToken(
+                issuer: _configuration["JwtConfig:validIssuer"],
+                audience: _configuration["JwtConfig:validAudience"],
+                claims: claims,
+                expires: DateTime.UtcNow.Add(TimeSpan.FromHours(2)),
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"])), SecurityAlgorithms.HmacSha256));
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            //return jwtToken;
         }
     }
 }

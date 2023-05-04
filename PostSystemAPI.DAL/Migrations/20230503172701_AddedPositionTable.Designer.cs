@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PostSystemAPI.DAL.Context;
 
@@ -11,9 +12,11 @@ using PostSystemAPI.DAL.Context;
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    partial class PostSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20230503172701_AddedPositionTable")]
+    partial class AddedPositionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

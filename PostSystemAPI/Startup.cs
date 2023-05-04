@@ -56,17 +56,26 @@ namespace PostSystemAPI
                 {
                     ValidateIssuerSigningKey = true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
                     IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = Configuration["JwtConfig:validIssuer"],
+                    ValidAudience = Configuration["JwtConfig:validAudience"]
                 };
             });
 
-            services.AddIdentity<User, IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = true;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("WorkerPolicy", policy => policy.RequireRole("Viewer"));
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("DriverPolicy", policy => policy.RequireRole("Driver"));
+            });
+
+            services.AddIdentity<User,IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 5;
                 options.Password.RequireDigit = false;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PostSystemContext>();
 
             services.AddScoped<ICityRepo, CityRepo>();
@@ -81,6 +90,7 @@ namespace PostSystemAPI
             services.AddScoped<IDeliveryService, DeliveryService>();
             //services.AddScoped<ISenderService, SenderService>();
             //services.AddScoped<IReceiverService, ReceiverService>();
+            services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Program>());
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -94,7 +104,7 @@ namespace PostSystemAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options => options
-               .WithOrigins("http://localhost:4200")
+               .WithOrigins("http://localhost:4200", "http://localhost:8100")
                .AllowAnyMethod()
                .AllowAnyHeader());
 

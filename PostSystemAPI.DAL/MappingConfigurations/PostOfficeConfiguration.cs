@@ -13,10 +13,14 @@ namespace PostSystemAPI.DAL.MappingConfigurations
         public static void Configure(ModelBuilder builder)
         {
             builder.Entity<PostOffice>()
-                    .HasMany(r => r.Deliveries)
-                    .WithOne(u => u.PostOffice)
-                    .HasForeignKey(e => e.PostOfficeId)
+                    .HasMany(r => r.SentDeliveries)
+                    .WithOne(u => u.StartPostOffice)
+                    .HasForeignKey(e => e.StartPostOfficeId)
                     .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<PostOffice>()
+                .HasMany(r => r.ReceivedDeliveries)
+                .WithOne(u => u.DestinationPostOffice)
+                .HasForeignKey(e => e.DestinationPostOfficeId);
             builder.Entity<City>()
                     .HasMany(r => r.PostOffices)
                     .WithOne(u => u.City)
