@@ -14,8 +14,8 @@ namespace PostSystemAPI.DAL.MappingConfigurations
         {
             builder.Entity<User>()
                     .HasMany(r => r.SendedDeliveries)
-                    .WithOne(u => u.SendedUser)
-                    .HasForeignKey(e => e.SendedUserId)
+                    .WithOne(u => u.SentUser)
+                    .HasForeignKey(e => e.SentUserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<User>()

@@ -8,6 +8,7 @@ public class DriverDeliveriesViewModel
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    public DateTime CreatedDate { get; set; }
     public PostOfficeForDriver From { get; set; }
     public PostOfficeForDriver To { get; set; }
     public DeliveryType DeliveryType { get; set; }

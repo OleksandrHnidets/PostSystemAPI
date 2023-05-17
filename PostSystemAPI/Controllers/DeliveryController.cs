@@ -60,8 +60,8 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
-                .Include(i => i.SendedUser)
+                .Where(d => d.SentUserId == id || d.ReceivedUserId == id)
+                .Include(i => i.SentUser)
                 .ToList();
             foreach(var delivery in deliveries)
             {
@@ -85,9 +85,9 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
+                .Where(d => d.SentUserId == id || d.ReceivedUserId == id)
                 .Where(d => d.DeliveryStatus == DeliveryStatus.Received)
-                .Include(i => i.SendedUser)
+                .Include(i => i.SentUser)
                 .ToList();
             List<ReadDeliveryView> deliveryViews = new List<ReadDeliveryView>();
             foreach (var delivery in deliveries)
@@ -106,9 +106,9 @@ namespace PostSystemAPI.WebApi.Controllers
                 return BadRequest("User is not found");
 
             var deliveries = _repo.Entities
-                .Where(d => d.SendedUserId == id || d.ReceivedUserId == id)
+                .Where(d => d.SentUserId == id || d.ReceivedUserId == id)
                 .Where(d => d.DeliveryStatus == DeliveryStatus.Declined)
-                .Include(i => i.SendedUser)
+                .Include(i => i.SentUser)
                 .ToList();
             List<ReadDeliveryView> deliveryViews = new List<ReadDeliveryView>();
             foreach (var delivery in deliveries)

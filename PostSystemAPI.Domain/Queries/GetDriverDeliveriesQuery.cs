@@ -9,10 +9,10 @@ using PostSystemAPI.Domain.ViewModels;
 
 namespace PostSystemAPI.Domain.Queries;
 
-public sealed record GetDriverDeliveries(string DriverId): IRequest<List<DriverDeliveriesViewModel>>;
+public sealed record GetDriverDeliveriesQuery(string DriverId): IRequest<List<DriverDeliveriesViewModel>>;
 
 public sealed class
-    GetDriverDeliveriesQueryHandler : IRequestHandler<GetDriverDeliveries, List<DriverDeliveriesViewModel>>
+    GetDriverDeliveriesQueryHandler : IRequestHandler<GetDriverDeliveriesQuery, List<DriverDeliveriesViewModel>>
 {
     private readonly PostSystemContext _postSystemContext;
 
@@ -21,7 +21,7 @@ public sealed class
         _postSystemContext = postSystemContext;
     }
 
-    public async Task<List<DriverDeliveriesViewModel>> Handle(GetDriverDeliveries request, CancellationToken cancellationToken)
+    public async Task<List<DriverDeliveriesViewModel>> Handle(GetDriverDeliveriesQuery request, CancellationToken cancellationToken)
     {
         var query = _postSystemContext.Deliveries
             .Include(d => d.StartPostOffice)
@@ -37,16 +37,17 @@ public sealed class
                 From = new PostOfficeForDriver()
                 {
                     Id = x.StartPostOffice.Id,
-                    Address = x.StartPostOffice.Adress,
+                    Address = x.StartPostOffice.Address,
                     Name = x.StartPostOffice.Name
                 },
                 To = new PostOfficeForDriver()
                 {
                     Id = x.DestinationPostOffice.Id,
-                    Address = x.DestinationPostOffice.Adress,
+                    Address = x.DestinationPostOffice.Address,
                     Name = x.DestinationPostOffice.Name
                 },
-                DeliveryType = x.DeliveryType
+                DeliveryType = x.DeliveryType,
+                CreatedDate = x.DeliveryDate
             }).ToListAsync(cancellationToken);
         
         return deliveries;

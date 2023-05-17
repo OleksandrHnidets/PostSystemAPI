@@ -34,7 +34,7 @@ public class UserController : ControllerBase
     [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Driver")]
     public async Task<IActionResult> GetDriverDeliveries(string driverId)
     {
-        var result = await _mediator.Send(new GetDriverDeliveries(driverId));
+        var result = await _mediator.Send(new GetDriverDeliveriesQuery(driverId));
         return Ok(result);
     }
 }

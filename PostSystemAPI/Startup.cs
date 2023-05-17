@@ -20,8 +20,12 @@ using PostSystemAPI.Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using PostSystemAPI.Domain.Commands;
+using PostSystemAPI.Domain.Queries;
+using PostSystemAPI.SignalR;
 
 namespace PostSystemAPI
 {
@@ -78,6 +82,8 @@ namespace PostSystemAPI
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PostSystemContext>();
 
+            services.AddSignalR();
+
             services.AddScoped<ICityRepo, CityRepo>();
             services.AddScoped<IPostOfficeRepo, PostOfficeRepo>();
             services.AddScoped<IDeliveryRepo, DeliveryRepo>();
@@ -90,7 +96,9 @@ namespace PostSystemAPI
             services.AddScoped<IDeliveryService, DeliveryService>();
             //services.AddScoped<ISenderService, SenderService>();
             //services.AddScoped<IReceiverService, ReceiverService>();
-            services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Program>());
+            services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<GetDriverDeliveriesQuery>());
+            services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<AssignDeliveryToDriverCommand>());
+            //services.AddMediatR(c => typeof(Startup).GetTypeInfo().Assembly);
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -104,9 +112,10 @@ namespace PostSystemAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options => options
-               .WithOrigins("http://localhost:4200", "http://localhost:8100")
+               .WithOrigins("http://localhost:4200", "http://localhost:8100", "http://localhost:56460")
                .AllowAnyMethod()
-               .AllowAnyHeader());
+               .AllowAnyHeader()
+               .AllowCredentials());
 
             if (env.IsDevelopment())
             {
@@ -125,6 +134,7 @@ namespace PostSystemAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LiveMapHub>("/liveMapHub");
             });
         }
     }

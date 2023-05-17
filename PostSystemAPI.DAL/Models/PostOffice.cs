@@ -7,18 +7,16 @@ using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Models
 {
-    public class PostOffice
+    public sealed class PostOffice
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Adress { get; set; }
+        public string Address { get; set; }
         public int PostOfficeBalance { get; set; }
         public Guid CityId { get; set; }
-        public Guid SentDeliveriesId { get; set; }
-        public Guid ReceivedDeliveriesId { get; set; }
-        public virtual City City { get; set; }
-        public virtual ICollection<Delivery> SentDeliveries { get; set; }
-        public virtual ICollection<Delivery> ReceivedDeliveries { get; set; }
+        public City City { get; set; }
+        public ICollection<Delivery> SentDeliveries { get; set; }
+        public ICollection<Delivery> ReceivedDeliveries { get; set; }
 
         public PostOffice()
         {
