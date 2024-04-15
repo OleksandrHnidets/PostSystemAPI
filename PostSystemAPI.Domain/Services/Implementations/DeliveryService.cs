@@ -30,18 +30,9 @@ namespace PostSystemAPI.Domain.Services.Implementations
             await _repo.SaveChangesAsync();
         }
 
-        /*public async Task<IEnumerable<Delivery>> GetAllDeliveries()
-        {
-            return await _repo.GetAllAsync(include: source =>source
-            .Include(p => p.PostOffice)
-                .ThenInclude(c => c.City)
-            .Include(s => s.Sender)
-            .Include(r => r.Receiver));
-        }*/
-
         public async Task<Delivery> GetDeliveryByIdAsync(string id)
         {
-            var delivery = await _repo.GetFirstAsync(predicate: d => d.Id == Guid.Parse(id));
+            var delivery = await _repo.GetFirstAsync(d => d.Id == Guid.Parse(id));
             return delivery;
         }
 

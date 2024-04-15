@@ -23,7 +23,7 @@ public class UserController : ControllerBase
 
 
     [HttpPost("{driverId}/add-delivery/{deliveryId}")]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Admin")]
+    //[Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Viewer")]
     public async Task<ActionResult<string>> AddDeliveryToDriver(string driverId, string deliveryId)
     {
         var result = await _mediator.Send(new AssignDeliveryToDriverCommand(driverId, Guid.Parse(deliveryId)));
@@ -31,10 +31,18 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{driverId}/deliveries")]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Driver")]
+    //[Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Driver")]
     public async Task<IActionResult> GetDriverDeliveries(string driverId)
     {
         var result = await _mediator.Send(new GetDriverDeliveriesQuery(driverId));
+        return Ok(result);
+    }
+
+    [HttpGet("drivers")]
+    //[Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme, Roles ="Viewer, Admin")]
+    public async Task<IActionResult> GetDrivers()
+    {
+        var result = await _mediator.Send(new GetDriversQuery());
         return Ok(result);
     }
 }

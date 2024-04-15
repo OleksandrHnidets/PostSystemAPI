@@ -40,6 +40,22 @@ namespace PostSystemAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    /*builder.AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .SetIsOriginAllowed(_=> true)
+                           .AllowCredentials();*/
+                    builder
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                });
+            });
+
             services.AddDbContext<PostSystemContext>(opt => opt.UseSqlServer
                 (Configuration.GetConnectionString("PostSystemConnection")));
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
@@ -88,17 +104,11 @@ namespace PostSystemAPI
             services.AddScoped<IPostOfficeRepo, PostOfficeRepo>();
             services.AddScoped<IDeliveryRepo, DeliveryRepo>();
             services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
-            //services.AddScoped<ISenderRepo, SenderRepo>();
-            //services.AddScoped<IReceiverRepo,ReceiverRepo>();
-
-           // services.AddScoped<ICityService, CityService>();
+            // services.AddScoped<ICityService, CityService>();
             services.AddScoped<IPostOfficeService, PostOfficeService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
-            //services.AddScoped<ISenderService, SenderService>();
-            //services.AddScoped<IReceiverService, ReceiverService>();
             services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<GetDriverDeliveriesQuery>());
             services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<AssignDeliveryToDriverCommand>());
-            //services.AddMediatR(c => typeof(Startup).GetTypeInfo().Assembly);
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -111,11 +121,7 @@ namespace PostSystemAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(options => options
-               .WithOrigins("http://localhost:4200", "http://localhost:8100", "http://localhost:56460")
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials());
+            app.UseCors();
 
             if (env.IsDevelopment())
             {

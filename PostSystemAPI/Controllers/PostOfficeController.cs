@@ -9,7 +9,9 @@ using PostSystemAPI.Domain.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using PostSystemAPI.Domain.Queries;
 
 namespace PostSystemAPI.WebApi.Controllers
 {
@@ -20,16 +22,14 @@ namespace PostSystemAPI.WebApi.Controllers
         private readonly IPostOfficeService _postOfficeService;
         private readonly IMapper _mapper;
         private readonly IPostOfficeRepo _repo;
-        private readonly ICityRepo _cityRepo;
-        private readonly PostSystemContext _context;
+        private readonly IMediator _mediator;
 
-        public PostOfficeController(IPostOfficeService cityService, IMapper mapper, IPostOfficeRepo repo, PostSystemContext context, ICityRepo cityRepo)
+        public PostOfficeController(IPostOfficeService cityService, IMapper mapper, IPostOfficeRepo repo, PostSystemContext context, ICityRepo cityRepo, IMediator mediator)
         {
             _postOfficeService = cityService;
             _mapper = mapper;
             _repo = repo;
-            _context = context;
-            _cityRepo = cityRepo;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}", Name = "GetPostOfficeById")]
@@ -81,7 +81,12 @@ namespace PostSystemAPI.WebApi.Controllers
             return Ok(postOfficesView);
         }
 
-
+        [HttpGet("all-for-create")]
+        public async Task<ActionResult> GetPostOfficesForCreate()
+        {
+            var result = await _mediator.Send(new GetPostOfficesForCreateCommand());
+            return Ok(result);
+        }
 
     }
 }

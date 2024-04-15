@@ -9,9 +9,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using MediatR;
 using PostSystemAPI.DAL.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PostSystemAPI.Domain.Commands;
+using PostSystemAPI.Domain.Queries;
 
 namespace PostSystemAPI.WebApi.Controllers
 {
@@ -22,18 +25,16 @@ namespace PostSystemAPI.WebApi.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly IMapper _mapper;
         private readonly IDeliveryRepo _repo;
-        private readonly ITransactionHistoryRepository _transactionRepo;
         private readonly UserManager<User> _userManager;
-        private readonly IPostOfficeRepo _postOfficeRepo;
+        private readonly IMediator _mediator;
 
-        public DeliveryController(IDeliveryService deliveryService, IMapper mapper, IDeliveryRepo repo, UserManager<User> userManager, ITransactionHistoryRepository transactionHistoryRepository, IPostOfficeRepo postOfficeRepo)
+        public DeliveryController(IDeliveryService deliveryService, IMapper mapper, IDeliveryRepo repo, UserManager<User> userManager, ITransactionHistoryRepository transactionHistoryRepository, IPostOfficeRepo postOfficeRepo, IMediator mediator)
         {
             _deliveryService = deliveryService;
             _mapper = mapper;
             _repo = repo;
             _userManager = userManager;
-            _transactionRepo = transactionHistoryRepository;
-            _postOfficeRepo = postOfficeRepo;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}", Name ="GetDeliveryById")]
@@ -43,14 +44,6 @@ namespace PostSystemAPI.WebApi.Controllers
             var deliveryView = _mapper.Map<DeliveryView>(delivery);
             return Ok(deliveryView);
         }
-
-       /* [HttpGet]
-        public async Task<ActionResult<IEnumerable<DeliveryView>>> GetAllDeliveries()
-        {
-            var deliveries = await _deliveryService.GetAllDeliveries();
-            var deliveryView = _mapper.Map<IEnumerable<DeliveryView>>(deliveries);
-            return Ok(deliveryView);
-        }*/
 
         [HttpGet("get-sended")]
         public async Task<ActionResult<IEnumerable<ReadDeliveryView>>> GetSendedDeliveries(string id)
@@ -153,62 +146,13 @@ namespace PostSystemAPI.WebApi.Controllers
 
         }
 
-        /*[HttpPost("accept-delivery")]
-        public async Task<ActionResult<string>> AcceptDelivery(string deliveryId, string userId)
-        {
-            try
-            {
-                var delivery = _repo.Entities.FirstOrDefault(r => r.Id == Guid.Parse(deliveryId));
-                var receiver = await _userManager.FindByIdAsync(userId);
-
-                if(delivery == null)
-                    return NotFound();
-
-                var existingTransaction = _transactionRepo.Entities.FirstOrDefault(t => t.DeliveryId == Guid.Parse(deliveryId));
-                if (existingTransaction != null)
-                    return NotFound();
-
-                if (receiver.Balance < delivery.Price)
-                    return BadRequest("Your Balance in too low");
-
-                receiver.Balance -= delivery.Price;
-                var postOffice = await _postOfficeRepo.Entities.FirstOrDefaultAsync(p => delivery.PostOfficeId == p.Id);
-                if(postOffice != null)
-                {
-                    postOffice.PostOfficeBalance += 100;
-                }
-
-                TransactionHistory newTransaction = new TransactionHistory()
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedDate = DateTime.Now,
-                    Name = delivery.DeliveryName,
-                    DeliveryId = delivery.Id
-                };
-
-                await _transactionRepo.AddAsync(newTransaction);
-                await _transactionRepo.SaveChangesAsync();
-
-                delivery.DeliveryStatus = DeliveryStatus.Received;
-
-                await _repo.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok("Delivery succesfully accepted");
-        }
-        */
-
         [HttpPost("decline-delivery")]
         public async Task<ActionResult<string>> DeclineDelivery(string deliveryId, string userId)
         {
             try
             {
                 var delivery = _repo.Entities.FirstOrDefault(r => r.Id == Guid.Parse(deliveryId));
-                var receiver = await _userManager.FindByIdAsync(userId);
+                await _userManager.FindByIdAsync(userId);
 
                 if (delivery == null)
                     return NotFound();
@@ -233,11 +177,47 @@ namespace PostSystemAPI.WebApi.Controllers
             return Ok(deliveryView);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteDelivery(string id)
         {
             await _deliveryService.DeleteDeliveryAsync(id);
             return Ok();
+        }
+
+
+        [HttpGet("deliveries")]
+        public async Task<ActionResult> GetDeliveries()
+        {
+            var result = await _mediator.Send(new GetDeliveriesQuery());
+            return Ok(result);
+        }
+
+        [HttpPost("create-delivery")]
+        public async Task<ActionResult<bool>> AddDelivery([FromBody] CreateDeliveryViemModel createDelivery)
+        {
+            var result = await _mediator.Send(new CreateDeliveryCommand(createDelivery));
+            return new ActionResult<bool>(result);
+        }
+
+        [HttpGet("delivery-edit/{id}")]
+        public async Task<ActionResult> GetDeliveryToUpdate(string id)
+        {
+            var result = await _mediator.Send(new GetDeliveryToUpdate(id));
+            return Ok(result);
+        }
+
+        [HttpPost("delivery-update")]
+        public async Task<ActionResult<bool>> UpdateDelivery([FromBody] UpdateDeliveryViewModel deliveryModel)
+        {
+            var result = await _mediator.Send(new UpdateDeliveryCommand(deliveryModel));
+            return new ActionResult<bool>(result);
+        }
+
+        [HttpGet("available-driver-deliveries/{driverId}")]
+        public async Task<ActionResult> GetAvaliableDeliveries(string driverId)
+        {
+            var result = await _mediator.Send(new GetAvaliableDeliveriesForDriver(driverId));
+            return Ok(result);
         }
     }
 }

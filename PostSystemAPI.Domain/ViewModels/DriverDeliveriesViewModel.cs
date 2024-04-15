@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using PostSystemAPI.DAL.Enums;
 
 namespace PostSystemAPI.Domain.ViewModels;
@@ -19,4 +20,20 @@ public class PostOfficeForDriver
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
+}
+
+public class DriverView 
+{
+    public string Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public int DeliveryCount { get; set; }
+    public CurrentDriverStatus DriverStatus { get; set; }
+    public List<DriverDelivery> Deliveries { get; set; }
+}
+
+public class DriverDelivery
+{
+    public string DeliveryName { get; set; }
+    public DeliveryType DeliveryType { get; set; }
 }

@@ -17,4 +17,10 @@ namespace PostSystemAPI.Domain.ViewModels
         public string ReceiverId { get; set; }
         public string SenderId { get; set; }
     }
+
+    public class AvaliableDriverDeliveries
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
 }

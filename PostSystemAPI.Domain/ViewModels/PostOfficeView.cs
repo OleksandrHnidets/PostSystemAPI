@@ -12,4 +12,10 @@ namespace PostSystemAPI.Domain.ViewModels
         public string Name { get; set; }
         public string CityId { get; set; }
     }
+
+    public class PostOfficeForCreate
+    {
+        public string Id { get;set; }
+        public string Name { get;set; }
+    }
 }

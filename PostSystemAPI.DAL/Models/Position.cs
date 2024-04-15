@@ -17,3 +17,10 @@ public class Position
     public virtual Delivery Delivery { get; set; }
 
 }
+
+public class UpdateMarkerViewModel
+{
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public string DriverId { get; set; }
+}

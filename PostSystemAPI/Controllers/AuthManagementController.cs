@@ -224,8 +224,54 @@ namespace PostSystemAPI.WebApi.Controllers
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"])), SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+        
+        [HttpPost("register-driver")]
+        public async Task<IActionResult> RegisterDriver([FromBody] UserRegistrationRequestDto user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                if (existingUser != null)
+                {
+                    return BadRequest(new RegistrationResponse()
+                    {
+                        Result = false,
+                        Errors = new List<string>()
+                        {
+                            "Email already exists"
+                        }
+                    });
+                }
 
-            //return jwtToken;
+                var newUser = new User() { Email = user.Email, UserName = $"{user.FirstName}_{user.LastName}", FirstName = user.FirstName, LastName = user.LastName, Balance = 20000 };
+                var IsCreated = await _userManager.CreateAsync(newUser, user.Password);
+                if (IsCreated.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newUser, "Driver");
+                    var jwtToken = GenerateJwtToken(newUser);
+                    return Ok(new RegistrationResponse()
+                    {
+                        Result = true,
+                        Token = await jwtToken
+                    });
+                }
+
+                return new JsonResult(new RegistrationResponse()
+                {
+                    Result = false,
+                    Errors = IsCreated.Errors.Select(x => x.Description).ToList()
+                })
+                { StatusCode = 500 };
+            }
+
+            return BadRequest(new RegistrationResponse()
+            {
+                Result = false,
+                Errors = new List<string>(){
+                                            "Invalid payload"
+                                        }
+            });
         }
     }
 }
