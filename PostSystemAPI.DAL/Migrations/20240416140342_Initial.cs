@@ -1,10 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PostSystemAPI.DAL.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -173,6 +179,10 @@ namespace PostSystemAPI.DAL.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    PostOfficeBalance = table.Column<int>(type: "int", nullable: false),
                     CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -196,39 +206,101 @@ namespace PostSystemAPI.DAL.Migrations
                     Price = table.Column<int>(type: "int", nullable: false),
                     DeliveryStatus = table.Column<byte>(type: "tinyint", nullable: false),
                     DeliveryType = table.Column<byte>(type: "tinyint", nullable: false),
-                    SendedBy = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReceivedBy = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PostOfficeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
+                    SentUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReceivedUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AssignedDriverId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StartPostOfficeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DestinationPostOfficeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Deliveries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Deliveries_AspNetUsers_ReceivedBy",
-                        column: x => x.ReceivedBy,
+                        name: "FK_Deliveries_AspNetUsers_AssignedDriverId",
+                        column: x => x.AssignedDriverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Deliveries_AspNetUsers_SendedBy",
-                        column: x => x.SendedBy,
+                        name: "FK_Deliveries_AspNetUsers_ReceivedUserId",
+                        column: x => x.ReceivedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Deliveries_PostOffices_PostOfficeId",
-                        column: x => x.PostOfficeId,
+                        name: "FK_Deliveries_AspNetUsers_SentUserId",
+                        column: x => x.SentUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Deliveries_PostOffices_DestinationPostOfficeId",
+                        column: x => x.DestinationPostOfficeId,
                         principalTable: "PostOffices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Deliveries_PostOffices_StartPostOfficeId",
+                        column: x => x.StartPostOfficeId,
+                        principalTable: "PostOffices",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Positions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    CurrentDriverStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DeliveryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Positions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Positions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Positions_Deliveries_DeliveryId",
+                        column: x => x.DeliveryId,
+                        principalTable: "Deliveries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionsHistory",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeliveryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionsHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransactionsHistory_Deliveries_DeliveryId",
+                        column: x => x.DeliveryId,
+                        principalTable: "Deliveries",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "46a816c0-610f-4f06-a8e6-e8a324dc4a8b", "df931c2a-34a5-4367-a0ad-5a90a93e8497", "Viewer", "VIEWER" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "41f5677b-adfb-43b6-b584-fcfd2a02db5e", "050a2668-3808-49cd-a355-f908227a5516", "Administrator", "ADMINISTRATOR" });
+                values: new object[,]
+                {
+                    { "722d80d3-5550-4d00-824c-bda76f9d82c3", null, "Viewer", "VIEWER" },
+                    { "8beaa84c-2aa0-4273-9c0a-641c11fc188b", null, "Driver", "DRIVER" },
+                    { "9222b7d3-fe1d-45a4-9c32-5ddfeeae8245", null, "Administrator", "ADMINISTRATOR" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -270,26 +342,54 @@ namespace PostSystemAPI.DAL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Deliveries_PostOfficeId",
+                name: "IX_Deliveries_AssignedDriverId",
                 table: "Deliveries",
-                column: "PostOfficeId");
+                column: "AssignedDriverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Deliveries_ReceivedBy",
+                name: "IX_Deliveries_DestinationPostOfficeId",
                 table: "Deliveries",
-                column: "ReceivedBy");
+                column: "DestinationPostOfficeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Deliveries_SendedBy",
+                name: "IX_Deliveries_ReceivedUserId",
                 table: "Deliveries",
-                column: "SendedBy");
+                column: "ReceivedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Deliveries_SentUserId",
+                table: "Deliveries",
+                column: "SentUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Deliveries_StartPostOfficeId",
+                table: "Deliveries",
+                column: "StartPostOfficeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Positions_DeliveryId",
+                table: "Positions",
+                column: "DeliveryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Positions_UserId",
+                table: "Positions",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostOffices_CityId",
                 table: "PostOffices",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionsHistory_DeliveryId",
+                table: "TransactionsHistory",
+                column: "DeliveryId",
+                unique: true,
+                filter: "[DeliveryId] IS NOT NULL");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -308,10 +408,16 @@ namespace PostSystemAPI.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Deliveries");
+                name: "Positions");
+
+            migrationBuilder.DropTable(
+                name: "TransactionsHistory");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Deliveries");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

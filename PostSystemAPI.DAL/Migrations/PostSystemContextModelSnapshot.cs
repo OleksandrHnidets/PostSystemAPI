@@ -51,19 +51,19 @@ namespace PostSystemAPI.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f62fedc9-8383-49a9-b842-7406cad76a7d",
+                            Id = "722d80d3-5550-4d00-824c-bda76f9d82c3",
                             Name = "Viewer",
                             NormalizedName = "VIEWER"
                         },
                         new
                         {
-                            Id = "115b8828-2c8e-4144-b1ad-8cd798c2f66a",
+                            Id = "9222b7d3-fe1d-45a4-9c32-5ddfeeae8245",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "90085b47-5160-41bc-89f2-fbe3caf1ad2d",
+                            Id = "8beaa84c-2aa0-4273-9c0a-641c11fc188b",
                             Name = "Driver",
                             NormalizedName = "DRIVER"
                         });

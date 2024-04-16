@@ -12,8 +12,8 @@ using PostSystemAPI.DAL.Context;
 namespace PostSystemAPI.DAL.Migrations
 {
     [DbContext(typeof(PostSystemContext))]
-    [Migration("20230509195441_RenamedFields")]
-    partial class RenamedFields
+    [Migration("20240416140342_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace PostSystemAPI.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fa9f5c9a-16d2-4aa3-9b4d-139173cebde5",
+                            Id = "722d80d3-5550-4d00-824c-bda76f9d82c3",
                             Name = "Viewer",
                             NormalizedName = "VIEWER"
                         },
                         new
                         {
-                            Id = "60057d69-ab11-455b-96a0-ac5c5bd95885",
+                            Id = "9222b7d3-fe1d-45a4-9c32-5ddfeeae8245",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "58643345-cb60-47bf-b4f4-4ef22518edf1",
+                            Id = "8beaa84c-2aa0-4273-9c0a-641c11fc188b",
                             Name = "Driver",
                             NormalizedName = "DRIVER"
                         });
@@ -265,8 +265,11 @@ namespace PostSystemAPI.DAL.Migrations
                     b.Property<Guid>("DeliveryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsDriverOnline")
-                        .HasColumnType("bit");
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -295,6 +298,12 @@ namespace PostSystemAPI.DAL.Migrations
 
                     b.Property<Guid>("CityId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");

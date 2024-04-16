@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Common.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PostSystemAPI.DAL.Context
 {
@@ -16,17 +12,17 @@ namespace PostSystemAPI.DAL.Context
             builder.HasData(
                 new IdentityRole
                 {
-                    Name = "Viewer",
+                    Name = Roles.Viewer.ToString(),
                     NormalizedName = "VIEWER"
                 },
                 new IdentityRole
                 {
-                    Name = "Administrator",
+                    Name = Roles.Administrator.ToString(),
                     NormalizedName = "ADMINISTRATOR"
                 },
                 new IdentityRole
                 {
-                    Name = "Driver",
+                    Name = Roles.Driver.ToString(),
                     NormalizedName = "DRIVER"
                 }
            );
