@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["PostSystemAPI/PostSystemAPI.WebApi.csproj", "PostSystemAPI/"]
 COPY ["PostSystemAPI.DAL/PostSystemAPI.DAL.csproj", "PostSystemAPI.DAL/"]
+COPY ["PostSystemAPI.Common/PostSystemAPI.Common.csproj", "PostSystemAPI.Common/"]
 COPY ["PostSystemAPI.Domain/PostSystemAPI.Domain.csproj", "PostSystemAPI.Domain/"]
 RUN dotnet restore "PostSystemAPI/PostSystemAPI.WebApi.csproj"
 COPY . .

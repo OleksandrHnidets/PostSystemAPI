@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\PostSystemAPI.Common\PostSystemAPI.Common.csproj" />
   </ItemGroup>
 
 </Project>

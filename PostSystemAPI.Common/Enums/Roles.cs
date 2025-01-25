@@ -1,4 +1,4 @@
-namespace Common.Enums;
+namespace PostSystemAPI.Common.Enums;
 
 public enum Roles
 {

@@ -25,9 +25,12 @@ namespace PostSystemAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _environment;
+        
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         private IConfiguration Configuration { get; }
@@ -46,9 +49,24 @@ namespace PostSystemAPI
                 });
             });
 
-            services.AddDbContext<PostSystemContext>(opt => opt.UseSqlServer
-                (Configuration.GetConnectionString("PostSystemConnection")));
-            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+            if (_environment.IsLocalDockerDevelopment())
+            {
+                var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+                var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+                var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+                var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+                var connectionString =
+                    $"Data Source={dbHost};Initial Catalog={dbName};User ID={dbUser};Password={dbPassword};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=180";
+                services.AddDbContext<PostSystemContext>(opt => opt.UseSqlServer
+                    (connectionString));
+            }
+            else
+            {
+                services.AddDbContext<PostSystemContext>(opt => opt.UseSqlServer
+                    (Configuration.GetConnectionString("PostSystemConnection")));
+            }
+            
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));   
 
             //Authentication and scheme
             services.AddAuthentication(options =>

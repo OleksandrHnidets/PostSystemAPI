@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Common.Enums;
+using PostSystemAPI.Common.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +29,7 @@ public static class DatabaseExtensions
         using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         if (!userManager.GetUsersInRoleAsync(Roles.Administrator.ToString()).GetAwaiter().GetResult().Any())
         {
-            var adminUser = new User()
+            var adminUser = new User()  
             {
                 Email = configuration["DefaultUser:Email"],
                 UserName = $"{configuration["DefaultUser:FirstName"]}_{configuration["DefaultUser:LastName"]}",

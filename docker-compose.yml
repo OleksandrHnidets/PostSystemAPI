@@ -1,0 +1,50 @@
+﻿version: '3.4'
+
+networks:
+  web-api-database-network:
+  web-api-client-network:
+
+services:
+  post-system-web-api:
+    image: ${DOCKER_REGISTRY-}post-system-web-api
+    container_name: post-system-web-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - sql-server
+    environment:
+      - DB_HOST=sql-server
+      - DB_NAME=PostSystemDB
+      - DB_USER=sa
+      - DB_PASSWORD=P@ssword123
+      - ASPNETCORE_ENVIRONMENT=LocalDockerDevelopment
+    networks:
+      - web-api-database-network
+      - web-api-client-network
+  
+  post-system-client:
+    image: ${DOCKER_REGISTRY-}post-system-client
+    container_name: post-system-client
+    build:
+      context: ../post-system/
+      dockerfile: Dockerfile
+    ports:
+      - "9000:80"
+    depends_on:
+      - post-system-web-api
+    networks:
+      - web-api-client-network
+      
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql-server
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=P@ssword123
+    networks:
+      - web-api-database-network
